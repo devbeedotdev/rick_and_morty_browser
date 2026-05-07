@@ -16,4 +16,27 @@ object AppConstants {
 
     const val START_PAGE = 1
     const val DEFAULT_PAGE_SIZE = 20
+
+    object Tables {
+        const val CHARACTERS = "characters"
+        const val EPISODES = "episodes"
+    }
+
+    object CharacterColumns {
+        const val ID = "id"
+        const val PAGE = "page"
+        const val NAME = "name"
+        const val SPECIES = "species"
+        const val STATUS = "status"
+        const val IMAGE = "image"
+        const val EPISODE_URLS = "episode_urls"
+        const val LOCATION_NAME = "location_name"
+        const val LOCATION_URL = "location_url"
+    }
+
+    object EpisodeColumns {
+        const val ID = "id"
+        const val NAME = "name"
+        const val CODE = "code"
+    }
 }
