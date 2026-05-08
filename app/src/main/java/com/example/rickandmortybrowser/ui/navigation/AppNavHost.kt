@@ -25,6 +25,7 @@ fun AppNavHost(
     characterListUiState: CharacterListUiState,
     isCharacterListOffline: Boolean,
     onRetryCharacters: () -> Unit,
+    onClearCharacterSearch: () -> Unit,
     onLoadNextCharactersPage: () -> Unit,
     onRetryLoadNextCharactersPage: () -> Unit,
 ) {
@@ -38,6 +39,7 @@ fun AppNavHost(
                 uiState = characterListUiState,
                 isOffline = isCharacterListOffline,
                 onRetry = onRetryCharacters,
+                onClearSearch = onClearCharacterSearch,
                 onCharacterClick = { characterId ->
                     navController.navigate(Routes.characterDetailRoute(characterId))
                 },

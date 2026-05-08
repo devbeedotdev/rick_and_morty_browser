@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
                     characterListUiState = uiState,
                     isCharacterListOffline = isOffline,
                     onRetryCharacters = characterListViewModel::loadCharacters,
+                    onClearCharacterSearch = characterListViewModel::clearSearch,
                     onLoadNextCharactersPage = characterListViewModel::loadNextPage,
                     onRetryLoadNextCharactersPage = characterListViewModel::retryLoadNextPage,
                 )

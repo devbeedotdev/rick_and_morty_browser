@@ -34,12 +34,18 @@ class CharacterListViewModel @Inject constructor(
         )
     private var currentPage = AppConstants.START_PAGE
     private var isPageRequestInProgress = false
+    private var searchName: String? = null
+    private var searchStatus: String? = null
+    private var searchSpecies: String? = null
 
     init {
         loadCharacters()
     }
 
     fun loadCharacters(page: Int = AppConstants.START_PAGE) {
+        searchName = null
+        searchStatus = null
+        searchSpecies = null
         currentPage = page
         isPageRequestInProgress = false
         viewModelScope.launch {
@@ -57,6 +63,37 @@ class CharacterListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun searchCharacters(
+        name: String?,
+        status: String?,
+        species: String?,
+    ) {
+        searchName = name?.takeIf { it.isNotBlank() }
+        searchStatus = status?.takeIf { it.isNotBlank() }
+        searchSpecies = species?.takeIf { it.isNotBlank() }
+        isPageRequestInProgress = false
+
+        viewModelScope.launch {
+            characterRepository.searchCharacters(searchName, searchStatus, searchSpecies).collectLatest { result ->
+                _uiState.value = when (result) {
+                    is Result.Loading -> CharacterListUiState.Loading
+                    is Result.Success -> {
+                        if (result.data.isEmpty()) {
+                            CharacterListUiState.SearchEmpty(buildSearchQueryLabel())
+                        } else {
+                            CharacterListUiState.Success(result.data)
+                        }
+                    }
+                    is Result.Error -> CharacterListUiState.Error(result.message)
+                }
+            }
+        }
+    }
+
+    fun clearSearch() {
+        loadCharacters(AppConstants.START_PAGE)
     }
 
     fun loadNextPage() {
@@ -101,5 +138,10 @@ class CharacterListViewModel @Inject constructor(
 
     fun retryLoadNextPage() {
         loadNextPage()
+    }
+
+    private fun buildSearchQueryLabel(): String {
+        val parts = listOfNotNull(searchName, searchStatus, searchSpecies)
+        return parts.joinToString(" ").ifBlank { "-" }
     }
 }

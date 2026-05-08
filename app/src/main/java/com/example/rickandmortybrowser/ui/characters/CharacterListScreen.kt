@@ -41,6 +41,7 @@ fun CharacterListScreen(
     uiState: CharacterListUiState,
     isOffline: Boolean,
     onRetry: () -> Unit,
+    onClearSearch: () -> Unit,
     onCharacterClick: (Int) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadNextPage: () -> Unit,
@@ -68,6 +69,11 @@ fun CharacterListScreen(
                 onRetry = onRetry,
                 modifier = Modifier.padding(innerPadding),
             )
+            is CharacterListUiState.SearchEmpty -> SearchEmptyState(
+                query = uiState.query,
+                onClearSearch = onClearSearch,
+                modifier = Modifier.padding(innerPadding),
+            )
             is CharacterListUiState.Error -> ErrorState(
                 message = uiState.message,
                 onRetry = onRetry,
@@ -82,6 +88,24 @@ fun CharacterListScreen(
                 onRetryLoadNextPage = onRetryLoadNextPage,
                 modifier = Modifier.padding(innerPadding),
             )
+        }
+    }
+}
+
+@Composable
+private fun SearchEmptyState(
+    query: String,
+    onClearSearch: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(text = stringResource(R.string.search_empty_characters_message, query))
+        Button(onClick = onClearSearch, modifier = Modifier.padding(top = 12.dp)) {
+            Text(stringResource(R.string.clear_search))
         }
     }
 }
