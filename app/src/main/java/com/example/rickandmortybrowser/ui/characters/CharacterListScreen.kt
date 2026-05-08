@@ -16,10 +16,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,23 +38,48 @@ import com.example.rickandmortybrowser.data.remote.model.Character
 @Composable
 fun CharacterListScreen(
     uiState: CharacterListUiState,
+    isOffline: Boolean,
     onRetry: () -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (uiState) {
-        CharacterListUiState.Loading -> LoadingState(modifier)
-        CharacterListUiState.Empty -> EmptyState(onRetry = onRetry, modifier = modifier)
-        is CharacterListUiState.Error -> ErrorState(message = uiState.message, onRetry = onRetry, modifier = modifier)
-        is CharacterListUiState.Success -> CharacterListContent(
-            characters = uiState.characters,
-            isAppending = uiState.isAppending,
-            appendErrorMessage = uiState.appendErrorMessage,
-            onLoadNextPage = onLoadNextPage,
-            onRetryLoadNextPage = onRetryLoadNextPage,
-            modifier = modifier,
-        )
+    val snackbarHostState = remember { SnackbarHostState() }
+    val offlineMessage = stringResource(R.string.offline_cached_message)
+
+    LaunchedEffect(isOffline) {
+        if (isOffline) {
+            snackbarHostState.showSnackbar(
+                message = offlineMessage,
+                duration = SnackbarDuration.Short,
+            )
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        modifier = modifier,
+    ) { innerPadding ->
+        when (uiState) {
+            CharacterListUiState.Loading -> LoadingState(Modifier.padding(innerPadding))
+            CharacterListUiState.Empty -> EmptyState(
+                onRetry = onRetry,
+                modifier = Modifier.padding(innerPadding),
+            )
+            is CharacterListUiState.Error -> ErrorState(
+                message = uiState.message,
+                onRetry = onRetry,
+                modifier = Modifier.padding(innerPadding),
+            )
+            is CharacterListUiState.Success -> CharacterListContent(
+                characters = uiState.characters,
+                isAppending = uiState.isAppending,
+                appendErrorMessage = uiState.appendErrorMessage,
+                onLoadNextPage = onLoadNextPage,
+                onRetryLoadNextPage = onRetryLoadNextPage,
+                modifier = Modifier.padding(innerPadding),
+            )
+        }
     }
 }
 

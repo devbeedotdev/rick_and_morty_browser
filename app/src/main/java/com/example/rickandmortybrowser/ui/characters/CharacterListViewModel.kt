@@ -5,21 +5,33 @@ import androidx.lifecycle.viewModelScope
 import com.example.rickandmortybrowser.data.repository.CharacterRepository
 import com.example.rickandmortybrowser.data.repository.Result
 import com.example.rickandmortybrowser.util.AppConstants
+import com.example.rickandmortybrowser.util.NetworkMonitor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
     private val characterRepository: CharacterRepository,
+    networkMonitor: NetworkMonitor,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<CharacterListUiState>(CharacterListUiState.Loading)
     val uiState: StateFlow<CharacterListUiState> = _uiState.asStateFlow()
+    val isOffline: StateFlow<Boolean> = networkMonitor.isConnected
+        .map { connected -> !connected }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            initialValue = false,
+        )
     private var currentPage = AppConstants.START_PAGE
     private var isPageRequestInProgress = false
 
