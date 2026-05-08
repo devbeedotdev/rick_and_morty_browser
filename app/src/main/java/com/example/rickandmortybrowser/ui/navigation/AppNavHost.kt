@@ -15,6 +15,8 @@ private object Routes {
 fun AppNavHost(
     characterListUiState: CharacterListUiState,
     onRetryCharacters: () -> Unit,
+    onLoadNextCharactersPage: () -> Unit,
+    onRetryLoadNextCharactersPage: () -> Unit,
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -25,6 +27,8 @@ fun AppNavHost(
             CharacterListScreen(
                 uiState = characterListUiState,
                 onRetry = onRetryCharacters,
+                onLoadNextPage = onLoadNextCharactersPage,
+                onRetryLoadNextPage = onRetryLoadNextCharactersPage,
             )
         }
     }

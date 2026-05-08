@@ -20,12 +20,16 @@ class CharacterListViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<CharacterListUiState>(CharacterListUiState.Loading)
     val uiState: StateFlow<CharacterListUiState> = _uiState.asStateFlow()
+    private var currentPage = AppConstants.START_PAGE
+    private var isPageRequestInProgress = false
 
     init {
         loadCharacters()
     }
 
     fun loadCharacters(page: Int = AppConstants.START_PAGE) {
+        currentPage = page
+        isPageRequestInProgress = false
         viewModelScope.launch {
             characterRepository.getCharacters(page).collectLatest { result ->
                 _uiState.value = when (result) {
@@ -41,5 +45,49 @@ class CharacterListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun loadNextPage() {
+        if (isPageRequestInProgress) return
+        val currentState = _uiState.value as? CharacterListUiState.Success ?: return
+        if (currentState.characters.isEmpty()) return
+
+        isPageRequestInProgress = true
+        _uiState.value = currentState.copy(
+            isAppending = true,
+            appendErrorMessage = null,
+        )
+        val nextPage = currentPage + 1
+
+        viewModelScope.launch {
+            characterRepository.getCharacters(nextPage).collectLatest { result ->
+                when (result) {
+                    is Result.Loading -> Unit
+                    is Result.Success -> {
+                        val merged = (currentState.characters + result.data).distinctBy { it.id }
+                        _uiState.value = CharacterListUiState.Success(
+                            characters = merged,
+                            isAppending = false,
+                            appendErrorMessage = null,
+                        )
+                        if (result.data.isNotEmpty()) {
+                            currentPage = nextPage
+                        }
+                        isPageRequestInProgress = false
+                    }
+                    is Result.Error -> {
+                        _uiState.value = currentState.copy(
+                            isAppending = false,
+                            appendErrorMessage = result.message,
+                        )
+                        isPageRequestInProgress = false
+                    }
+                }
+            }
+        }
+    }
+
+    fun retryLoadNextPage() {
+        loadNextPage()
     }
 }

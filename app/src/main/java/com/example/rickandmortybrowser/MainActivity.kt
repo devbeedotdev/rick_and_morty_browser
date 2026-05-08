@@ -25,6 +25,8 @@ class MainActivity : ComponentActivity() {
                 AppNavHost(
                     characterListUiState = uiState,
                     onRetryCharacters = characterListViewModel::loadCharacters,
+                    onLoadNextCharactersPage = characterListViewModel::loadNextPage,
+                    onRetryLoadNextCharactersPage = characterListViewModel::retryLoadNextPage,
                 )
             }
         }
