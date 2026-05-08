@@ -31,10 +31,13 @@ object AppConstants {
         const val ID = "id"
         const val PAGE = "page"
         const val NAME = "name"
+        const val GENDER = "gender"
         const val SPECIES = "species"
         const val STATUS = "status"
         const val IMAGE = "image"
         const val EPISODE_URLS = "episode_urls"
+        const val ORIGIN_NAME = "origin_name"
+        const val ORIGIN_URL = "origin_url"
         const val LOCATION_NAME = "location_name"
         const val LOCATION_URL = "location_url"
     }
@@ -43,5 +46,6 @@ object AppConstants {
         const val ID = "id"
         const val NAME = "name"
         const val CODE = "code"
+        const val AIR_DATE = "air_date"
     }
 }

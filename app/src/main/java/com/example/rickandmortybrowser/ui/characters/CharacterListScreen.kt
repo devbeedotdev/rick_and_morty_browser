@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,6 +41,7 @@ fun CharacterListScreen(
     uiState: CharacterListUiState,
     isOffline: Boolean,
     onRetry: () -> Unit,
+    onCharacterClick: (Int) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier,
@@ -75,6 +77,7 @@ fun CharacterListScreen(
                 characters = uiState.characters,
                 isAppending = uiState.isAppending,
                 appendErrorMessage = uiState.appendErrorMessage,
+                onCharacterClick = onCharacterClick,
                 onLoadNextPage = onLoadNextPage,
                 onRetryLoadNextPage = onRetryLoadNextPage,
                 modifier = Modifier.padding(innerPadding),
@@ -88,6 +91,7 @@ private fun CharacterListContent(
     characters: List<Character>,
     isAppending: Boolean,
     appendErrorMessage: String?,
+    onCharacterClick: (Int) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier,
@@ -105,7 +109,10 @@ private fun CharacterListContent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(characters, key = { it.id }) { character ->
-            CharacterRow(character = character)
+            CharacterRow(
+                character = character,
+                onClick = { onCharacterClick(character.id) },
+            )
         }
         if (isAppending) {
             item(key = "append_loading") {
@@ -142,10 +149,15 @@ private fun ObservePaginationThreshold(
 }
 
 @Composable
-private fun CharacterRow(character: Character, modifier: Modifier = Modifier) {
+private fun CharacterRow(
+    character: Character,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),

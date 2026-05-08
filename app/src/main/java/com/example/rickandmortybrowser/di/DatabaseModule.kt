@@ -23,7 +23,7 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             AppConstants.ROOM_DB_NAME,
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

@@ -6,4 +6,15 @@
     <string name="status_dead">Dead</string>
     <string name="status_unknown">Unknown</string>
     <string name="offline_cached_message">You\'re offline — showing cached data</string>
+    <string name="first_episodes_label">First 3 Episodes</string>
+    <string name="no_episodes_available">No episodes available.</string>
+    <string name="episode_item_format">\u2022 %1$s - %2$s (%3$s)</string>
+    <string name="character_detail_title">Character Details</string>
+    <string name="back">Back</string>
+    <string name="label_status">Status: %1$s</string>
+    <string name="label_species">Species: %1$s</string>
+    <string name="label_gender">Gender: %1$s</string>
+    <string name="label_origin">Origin: %1$s</string>
+    <string name="label_location">Location: %1$s</string>
+    <string name="offline_not_cached_message">You\'re offline and this hasn\'t been cached yet.</string>
 </resources>
