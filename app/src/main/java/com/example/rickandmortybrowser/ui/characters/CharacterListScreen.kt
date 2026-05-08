@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.rickandmortybrowser.R
 import com.example.rickandmortybrowser.data.remote.model.Character
 
 @Composable
@@ -79,9 +81,9 @@ private fun CharacterRow(character: Character, modifier: Modifier = Modifier) {
 @Composable
 private fun StatusBadge(status: String, modifier: Modifier = Modifier) {
     val (badgeColor, label) = when (status.lowercase()) {
-        "alive" -> Color(0xFF2E7D32) to "Alive"
-        "dead" -> Color(0xFFC62828) to "Dead"
-        else -> Color(0xFF757575) to "Unknown"
+        "alive" -> Color(0xFF2E7D32) to stringResource(R.string.status_alive)
+        "dead" -> Color(0xFFC62828) to stringResource(R.string.status_dead)
+        else -> Color(0xFF757575) to stringResource(R.string.status_unknown)
     }
 
     Surface(
@@ -116,9 +118,9 @@ private fun EmptyState(onRetry: () -> Unit, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(text = "No characters found")
+        Text(text = stringResource(R.string.empty_characters_message))
         Button(onClick = onRetry, modifier = Modifier.padding(top = 12.dp)) {
-            Text("Retry")
+            Text(stringResource(R.string.retry))
         }
     }
 }
@@ -132,7 +134,7 @@ private fun ErrorState(message: String, onRetry: () -> Unit, modifier: Modifier 
     ) {
         Text(text = message)
         Button(onClick = onRetry, modifier = Modifier.padding(top = 12.dp)) {
-            Text("Retry")
+            Text(stringResource(R.string.retry))
         }
     }
 }

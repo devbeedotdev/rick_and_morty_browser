@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
-import com.example.rickandmortybrowser.ui.characters.CharacterListScreen
 import com.example.rickandmortybrowser.ui.characters.CharacterListViewModel
+import com.example.rickandmortybrowser.ui.navigation.AppNavHost
 import com.example.rickandmortybrowser.ui.theme.RickAndMortyBrowserTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,9 +22,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by characterListViewModel.uiState.collectAsState()
             RickAndMortyBrowserTheme {
-                CharacterListScreen(
-                    uiState = uiState,
-                    onRetry = characterListViewModel::loadCharacters,
+                AppNavHost(
+                    characterListUiState = uiState,
+                    onRetryCharacters = characterListViewModel::loadCharacters,
                 )
             }
         }
