@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RickAndMortyBrowser</string>
+    <string name="retry">Retry</string>
+    <string name="empty_characters_message">No characters found right now. Try again in a moment.</string>
+    <string name="status_alive">Alive</string>
+    <string name="status_dead">Dead</string>
+    <string name="status_unknown">Unknown</string>
 </resources>
