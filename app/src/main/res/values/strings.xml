@@ -6,4 +6,7 @@
     <string name="status_dead">Dead</string>
     <string name="status_unknown">Unknown</string>
     <string name="offline_cached_message">You\'re offline — showing cached data</string>
+    <string name="first_episodes_label">First 3 Episodes</string>
+    <string name="no_episodes_available">No episodes available.</string>
+    <string name="episode_item_format">\u2022 %1$s - %2$s</string>
 </resources>

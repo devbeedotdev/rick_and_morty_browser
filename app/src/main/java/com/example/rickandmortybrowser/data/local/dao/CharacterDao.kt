@@ -15,6 +15,9 @@ interface CharacterDao {
     @Query("SELECT * FROM ${AppConstants.Tables.CHARACTERS} WHERE ${AppConstants.CharacterColumns.PAGE} = :page ORDER BY ${AppConstants.CharacterColumns.ID} ASC")
     suspend fun getByPage(page: Int): List<CharacterEntity>
 
+    @Query("SELECT * FROM ${AppConstants.Tables.CHARACTERS} WHERE ${AppConstants.CharacterColumns.ID} = :id LIMIT 1")
+    suspend fun getById(id: Int): CharacterEntity?
+
     @Query(
         "SELECT * FROM ${AppConstants.Tables.CHARACTERS} " +
             "WHERE (:name IS NULL OR ${AppConstants.CharacterColumns.NAME} LIKE '%' || :name || '%') " +

@@ -63,4 +63,15 @@ class CharacterRepositoryImpl @Inject constructor(
             emit(Result.Error(throwable.toRepositoryMessage()))
         }
     }
+
+    override fun getCharacterById(characterId: Int): Flow<Result<Character>> = flow {
+        emit(Result.Loading)
+
+        val cached = characterDao.getById(characterId)
+        if (cached != null) {
+            emit(Result.Success(cached.toModel()))
+        } else {
+            emit(Result.Error(AppConstants.NULL_RESPONSE_MESSAGE))
+        }
+    }
 }
