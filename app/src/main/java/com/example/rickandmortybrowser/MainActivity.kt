@@ -22,12 +22,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by characterListViewModel.uiState.collectAsState()
             val isOffline by characterListViewModel.isOffline.collectAsState()
+            val searchQuery by characterListViewModel.query.collectAsState()
+            val statusFilter by characterListViewModel.statusFilter.collectAsState()
+            val speciesFilter by characterListViewModel.speciesFilter.collectAsState()
             RickAndMortyBrowserTheme {
                 AppNavHost(
                     characterListUiState = uiState,
                     isCharacterListOffline = isOffline,
+                    characterSearchQuery = searchQuery,
+                    characterStatusFilter = statusFilter,
+                    characterSpeciesFilter = speciesFilter,
                     onRetryCharacters = characterListViewModel::loadCharacters,
                     onClearCharacterSearch = characterListViewModel::clearSearch,
+                    onCharacterSearchQueryChanged = characterListViewModel::onSearchQueryChanged,
+                    onCharacterStatusFilterChanged = characterListViewModel::onStatusFilterSelected,
+                    onCharacterSpeciesFilterChanged = characterListViewModel::onSpeciesFilterSelected,
                     onLoadNextCharactersPage = characterListViewModel::loadNextPage,
                     onRetryLoadNextCharactersPage = characterListViewModel::retryLoadNextPage,
                 )

@@ -16,6 +16,11 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override fun getCharacters(page: Int): Flow<Result<List<Character>>> = flow {
         emit(Result.Loading)
+        val searchKey = buildSearchKey(
+            name = null,
+            status = null,
+            species = null,
+        )
 
         val cached = characterDao.getByPage(page)
         if (cached.isNotEmpty()) {
@@ -29,7 +34,7 @@ class CharacterRepositoryImpl @Inject constructor(
                 emit(Result.Error(AppConstants.NULL_RESPONSE_MESSAGE))
                 return@flow
             }
-            characterDao.insertAll(fresh.map { CharacterEntity.fromModel(it, page) })
+            characterDao.insertAll(fresh.map { CharacterEntity.fromModel(it, page, searchKey) })
             emit(Result.Success(fresh))
         } catch (throwable: Throwable) {
             emit(Result.Error(throwable.toRepositoryMessage()))
@@ -42,8 +47,9 @@ class CharacterRepositoryImpl @Inject constructor(
         species: String?,
     ): Flow<Result<List<Character>>> = flow {
         emit(Result.Loading)
+        val searchKey = buildSearchKey(name, status, species)
 
-        val cached = characterDao.searchByFilters(name, status, species)
+        val cached = characterDao.getBySearchKey(searchKey)
         if (cached.isNotEmpty()) {
             emit(Result.Success(cached.map { it.toModel() }))
         }
@@ -56,7 +62,13 @@ class CharacterRepositoryImpl @Inject constructor(
                 return@flow
             }
             characterDao.insertAll(
-                fresh.map { CharacterEntity.fromModel(it, AppConstants.START_PAGE) },
+                fresh.map {
+                    CharacterEntity.fromModel(
+                        character = it,
+                        page = AppConstants.START_PAGE,
+                        searchKey = searchKey,
+                    )
+                },
             )
             emit(Result.Success(fresh))
         } catch (throwable: Throwable) {
@@ -74,4 +86,16 @@ class CharacterRepositoryImpl @Inject constructor(
             emit(Result.Error(AppConstants.NULL_RESPONSE_MESSAGE))
         }
     }
+}
+
+private fun buildSearchKey(
+    name: String?,
+    status: String?,
+    species: String?,
+): String {
+    val normalizedName = name?.trim().orEmpty()
+    val normalizedStatus = status?.trim().orEmpty()
+    val normalizedSpecies = species?.trim().orEmpty()
+    return listOf(normalizedName, normalizedStatus, normalizedSpecies)
+        .joinToString(AppConstants.SEARCH_KEY_SEPARATOR)
 }

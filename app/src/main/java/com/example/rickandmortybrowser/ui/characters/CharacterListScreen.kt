@@ -16,8 +16,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -35,13 +38,21 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.rickandmortybrowser.R
 import com.example.rickandmortybrowser.data.remote.model.Character
+import com.example.rickandmortybrowser.util.AppConstants
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterListScreen(
     uiState: CharacterListUiState,
     isOffline: Boolean,
+    query: String,
+    selectedStatus: String?,
+    selectedSpecies: String?,
     onRetry: () -> Unit,
     onClearSearch: () -> Unit,
+    onQueryChanged: (String) -> Unit,
+    onStatusSelected: (String?) -> Unit,
+    onSpeciesSelected: (String?) -> Unit,
     onCharacterClick: (Int) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadNextPage: () -> Unit,
@@ -63,33 +74,133 @@ fun CharacterListScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier,
     ) { innerPadding ->
-        when (uiState) {
-            CharacterListUiState.Loading -> LoadingState(Modifier.padding(innerPadding))
-            CharacterListUiState.Empty -> EmptyState(
-                onRetry = onRetry,
-                modifier = Modifier.padding(innerPadding),
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+        ) {
+            SearchBar(
+                query = query,
+                onQueryChange = onQueryChanged,
+                onSearch = {},
+                active = false,
+                onActiveChange = {},
+                placeholder = { Text(stringResource(R.string.search_characters_placeholder)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            ) {}
+
+            FilterSection(
+                selectedStatus = selectedStatus,
+                selectedSpecies = selectedSpecies,
+                onStatusSelected = onStatusSelected,
+                onSpeciesSelected = onSpeciesSelected,
             )
-            is CharacterListUiState.SearchEmpty -> SearchEmptyState(
-                query = uiState.query,
-                onClearSearch = onClearSearch,
-                modifier = Modifier.padding(innerPadding),
+
+            when (uiState) {
+                CharacterListUiState.Loading -> LoadingState()
+                CharacterListUiState.Empty -> EmptyState(onRetry = onRetry)
+                is CharacterListUiState.SearchEmpty -> SearchEmptyState(
+                    query = uiState.query,
+                    onClearSearch = onClearSearch,
+                )
+                is CharacterListUiState.Error -> ErrorState(
+                    message = uiState.message,
+                    onRetry = onRetry,
+                )
+                is CharacterListUiState.Success -> CharacterListContent(
+                    characters = uiState.characters,
+                    isAppending = uiState.isAppending,
+                    appendErrorMessage = uiState.appendErrorMessage,
+                    onCharacterClick = onCharacterClick,
+                    onLoadNextPage = onLoadNextPage,
+                    onRetryLoadNextPage = onRetryLoadNextPage,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterSection(
+    selectedStatus: String?,
+    selectedSpecies: String?,
+    onStatusSelected: (String?) -> Unit,
+    onSpeciesSelected: (String?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(text = stringResource(R.string.status_filter_label), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            StatusChip(
+                label = stringResource(R.string.filter_status_alive),
+                value = AppConstants.Filters.STATUS_ALIVE,
+                selected = selectedStatus == AppConstants.Filters.STATUS_ALIVE,
+                onStatusSelected = onStatusSelected,
             )
-            is CharacterListUiState.Error -> ErrorState(
-                message = uiState.message,
-                onRetry = onRetry,
-                modifier = Modifier.padding(innerPadding),
+            StatusChip(
+                label = stringResource(R.string.filter_status_dead),
+                value = AppConstants.Filters.STATUS_DEAD,
+                selected = selectedStatus == AppConstants.Filters.STATUS_DEAD,
+                onStatusSelected = onStatusSelected,
             )
-            is CharacterListUiState.Success -> CharacterListContent(
-                characters = uiState.characters,
-                isAppending = uiState.isAppending,
-                appendErrorMessage = uiState.appendErrorMessage,
-                onCharacterClick = onCharacterClick,
-                onLoadNextPage = onLoadNextPage,
-                onRetryLoadNextPage = onRetryLoadNextPage,
-                modifier = Modifier.padding(innerPadding),
+            StatusChip(
+                label = stringResource(R.string.filter_status_unknown),
+                value = AppConstants.Filters.STATUS_UNKNOWN,
+                selected = selectedStatus == AppConstants.Filters.STATUS_UNKNOWN,
+                onStatusSelected = onStatusSelected,
+            )
+        }
+
+        Text(text = stringResource(R.string.species_filter_label), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            SpeciesChip(
+                label = stringResource(R.string.filter_species_human),
+                value = AppConstants.Filters.SPECIES_HUMAN,
+                selected = selectedSpecies == AppConstants.Filters.SPECIES_HUMAN,
+                onSpeciesSelected = onSpeciesSelected,
+            )
+            SpeciesChip(
+                label = stringResource(R.string.filter_species_alien),
+                value = AppConstants.Filters.SPECIES_ALIEN,
+                selected = selectedSpecies == AppConstants.Filters.SPECIES_ALIEN,
+                onSpeciesSelected = onSpeciesSelected,
             )
         }
     }
+}
+
+@Composable
+private fun StatusChip(
+    label: String,
+    value: String,
+    selected: Boolean,
+    onStatusSelected: (String?) -> Unit,
+) {
+    FilterChip(
+        selected = selected,
+        onClick = { onStatusSelected(if (selected) null else value) },
+        label = { Text(label) },
+    )
+}
+
+@Composable
+private fun SpeciesChip(
+    label: String,
+    value: String,
+    selected: Boolean,
+    onSpeciesSelected: (String?) -> Unit,
+) {
+    FilterChip(
+        selected = selected,
+        onClick = { onSpeciesSelected(if (selected) null else value) },
+        label = { Text(label) },
+    )
 }
 
 @Composable

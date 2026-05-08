@@ -4,6 +4,14 @@
     <string name="clear_search">Clear search</string>
     <string name="empty_characters_message">No characters found right now. Try again in a moment.</string>
     <string name="search_empty_characters_message">No characters found for \"%1$s\"</string>
+    <string name="search_characters_placeholder">Search characters</string>
+    <string name="status_filter_label">Status</string>
+    <string name="species_filter_label">Species</string>
+    <string name="filter_status_alive">Alive</string>
+    <string name="filter_status_dead">Dead</string>
+    <string name="filter_status_unknown">Unknown</string>
+    <string name="filter_species_human">Human</string>
+    <string name="filter_species_alien">Alien</string>
     <string name="status_alive">Alive</string>
     <string name="status_dead">Dead</string>
     <string name="status_unknown">Unknown</string>

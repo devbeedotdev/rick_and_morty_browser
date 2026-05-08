@@ -16,6 +16,8 @@ object AppConstants {
 
     const val START_PAGE = 1
     const val DEFAULT_PAGE_SIZE = 20
+    const val SEARCH_DEBOUNCE_MS = 500L
+    const val SEARCH_KEY_SEPARATOR = "|"
 
     const val NETWORK_TIMEOUT_MESSAGE = "Request timed out. Please try again."
     const val NETWORK_ERROR_MESSAGE = "Network error. Check your connection and try again."
@@ -40,6 +42,15 @@ object AppConstants {
         const val ORIGIN_URL = "origin_url"
         const val LOCATION_NAME = "location_name"
         const val LOCATION_URL = "location_url"
+        const val SEARCH_KEY = "search_key"
+    }
+
+    object Filters {
+        const val STATUS_ALIVE = "alive"
+        const val STATUS_DEAD = "dead"
+        const val STATUS_UNKNOWN = "unknown"
+        const val SPECIES_HUMAN = "human"
+        const val SPECIES_ALIEN = "alien"
     }
 
     object EpisodeColumns {

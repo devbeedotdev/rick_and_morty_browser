@@ -35,6 +35,8 @@ data class CharacterEntity(
     val locationName: String,
     @ColumnInfo(name = AppConstants.CharacterColumns.LOCATION_URL)
     val locationUrl: String,
+    @ColumnInfo(name = AppConstants.CharacterColumns.SEARCH_KEY)
+    val searchKey: String,
 ) {
     fun toModel(): Character {
         return Character(
@@ -51,7 +53,7 @@ data class CharacterEntity(
     }
 
     companion object {
-        fun fromModel(character: Character, page: Int): CharacterEntity {
+        fun fromModel(character: Character, page: Int, searchKey: String): CharacterEntity {
             return CharacterEntity(
                 id = character.id,
                 page = page,
@@ -65,6 +67,7 @@ data class CharacterEntity(
                 originUrl = character.origin.url,
                 locationName = character.location.name,
                 locationUrl = character.location.url,
+                searchKey = searchKey,
             )
         }
     }
