@@ -52,7 +52,11 @@ fun AppNavHost(
         ) {
             val viewModel: DetailViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsState()
-            CharacterDetailScreen(uiState = uiState)
+            CharacterDetailScreen(
+                uiState = uiState,
+                onBackClick = { navController.popBackStack() },
+                onRetry = viewModel::retry,
+            )
         }
     }
 }

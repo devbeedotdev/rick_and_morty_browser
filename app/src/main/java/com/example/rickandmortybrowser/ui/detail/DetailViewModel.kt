@@ -9,12 +9,14 @@ import com.example.rickandmortybrowser.data.repository.CharacterRepository
 import com.example.rickandmortybrowser.data.repository.EpisodeRepository
 import com.example.rickandmortybrowser.data.repository.Result
 import com.example.rickandmortybrowser.util.AppConstants
+import com.example.rickandmortybrowser.util.NetworkMonitor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -22,6 +24,7 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val characterRepository: CharacterRepository,
     private val episodeRepository: EpisodeRepository,
+    private val networkMonitor: NetworkMonitor,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<CharacterDetailUiState>(CharacterDetailUiState.Loading)
     val uiState: StateFlow<CharacterDetailUiState> = _uiState.asStateFlow()
@@ -29,6 +32,10 @@ class DetailViewModel @Inject constructor(
     private val characterId: Int = checkNotNull(savedStateHandle["characterId"])
 
     init {
+        loadCharacterAndEpisodes()
+    }
+
+    fun retry() {
         loadCharacterAndEpisodes()
     }
 
@@ -46,7 +53,14 @@ class DetailViewModel @Inject constructor(
                         )
                         loadFirstThreeEpisodes(character)
                     }
-                    is Result.Error -> _uiState.value = CharacterDetailUiState.Error(result.message)
+                    is Result.Error -> {
+                        val isConnected = networkMonitor.isConnected.first()
+                        _uiState.value = if (!isConnected) {
+                            CharacterDetailUiState.OfflineNoCache
+                        } else {
+                            CharacterDetailUiState.Error(result.message)
+                        }
+                    }
                 }
             }
         }

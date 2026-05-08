@@ -11,7 +11,7 @@ import com.example.rickandmortybrowser.data.local.entity.EpisodeEntity
 
 @Database(
     entities = [CharacterEntity::class, EpisodeEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 @TypeConverters(RoomConverters::class)

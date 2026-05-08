@@ -11,4 +11,5 @@ sealed class CharacterDetailUiState {
         val isEpisodesLoading: Boolean,
     ) : CharacterDetailUiState()
     data class Error(val message: String) : CharacterDetailUiState()
+    data object OfflineNoCache : CharacterDetailUiState()
 }

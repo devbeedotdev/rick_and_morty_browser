@@ -15,8 +15,10 @@ data class EpisodeEntity(
     val name: String,
     @ColumnInfo(name = AppConstants.EpisodeColumns.CODE)
     val code: String,
+    @ColumnInfo(name = AppConstants.EpisodeColumns.AIR_DATE)
+    val airDate: String,
 ) {
-    fun toModel(): Episode = Episode(id = id, name = name, code = code)
+    fun toModel(): Episode = Episode(id = id, name = name, code = code, airDate = airDate)
 
     companion object {
         fun fromModel(episode: Episode): EpisodeEntity {
@@ -24,6 +26,7 @@ data class EpisodeEntity(
                 id = episode.id,
                 name = episode.name,
                 code = episode.code,
+                airDate = episode.airDate,
             )
         }
     }

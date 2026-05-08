@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.rickandmortybrowser.data.remote.model.Character
 import com.example.rickandmortybrowser.data.remote.model.CharacterLocation
+import com.example.rickandmortybrowser.data.remote.model.CharacterOrigin
 import com.example.rickandmortybrowser.util.AppConstants
 
 @Entity(tableName = AppConstants.Tables.CHARACTERS)
@@ -16,6 +17,8 @@ data class CharacterEntity(
     val page: Int,
     @ColumnInfo(name = AppConstants.CharacterColumns.NAME)
     val name: String,
+    @ColumnInfo(name = AppConstants.CharacterColumns.GENDER)
+    val gender: String,
     @ColumnInfo(name = AppConstants.CharacterColumns.SPECIES)
     val species: String,
     @ColumnInfo(name = AppConstants.CharacterColumns.STATUS)
@@ -24,6 +27,10 @@ data class CharacterEntity(
     val image: String,
     @ColumnInfo(name = AppConstants.CharacterColumns.EPISODE_URLS)
     val episode: List<String>,
+    @ColumnInfo(name = AppConstants.CharacterColumns.ORIGIN_NAME)
+    val originName: String,
+    @ColumnInfo(name = AppConstants.CharacterColumns.ORIGIN_URL)
+    val originUrl: String,
     @ColumnInfo(name = AppConstants.CharacterColumns.LOCATION_NAME)
     val locationName: String,
     @ColumnInfo(name = AppConstants.CharacterColumns.LOCATION_URL)
@@ -33,10 +40,12 @@ data class CharacterEntity(
         return Character(
             id = id,
             name = name,
+            gender = gender,
             species = species,
             status = status,
             image = image,
             episode = episode,
+            origin = CharacterOrigin(originName, originUrl),
             location = CharacterLocation(locationName, locationUrl),
         )
     }
@@ -47,10 +56,13 @@ data class CharacterEntity(
                 id = character.id,
                 page = page,
                 name = character.name,
+                gender = character.gender,
                 species = character.species,
                 status = character.status,
                 image = character.image,
                 episode = character.episode,
+                originName = character.origin.name,
+                originUrl = character.origin.url,
                 locationName = character.location.name,
                 locationUrl = character.location.url,
             )
