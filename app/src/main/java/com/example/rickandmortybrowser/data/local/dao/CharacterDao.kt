@@ -20,14 +20,8 @@ interface CharacterDao {
 
     @Query(
         "SELECT * FROM ${AppConstants.Tables.CHARACTERS} " +
-            "WHERE (:name IS NULL OR ${AppConstants.CharacterColumns.NAME} LIKE '%' || :name || '%') " +
-            "AND (:status IS NULL OR ${AppConstants.CharacterColumns.STATUS} = :status) " +
-            "AND (:species IS NULL OR ${AppConstants.CharacterColumns.SPECIES} LIKE '%' || :species || '%') " +
+            "WHERE ${AppConstants.CharacterColumns.SEARCH_KEY} = :searchKey " +
             "ORDER BY ${AppConstants.CharacterColumns.ID} ASC",
     )
-    suspend fun searchByFilters(
-        name: String?,
-        status: String?,
-        species: String?,
-    ): List<CharacterEntity>
+    suspend fun getBySearchKey(searchKey: String): List<CharacterEntity>
 }

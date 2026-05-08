@@ -24,7 +24,14 @@ private object Routes {
 fun AppNavHost(
     characterListUiState: CharacterListUiState,
     isCharacterListOffline: Boolean,
+    characterSearchQuery: String,
+    characterStatusFilter: String?,
+    characterSpeciesFilter: String?,
     onRetryCharacters: () -> Unit,
+    onClearCharacterSearch: () -> Unit,
+    onCharacterSearchQueryChanged: (String) -> Unit,
+    onCharacterStatusFilterChanged: (String?) -> Unit,
+    onCharacterSpeciesFilterChanged: (String?) -> Unit,
     onLoadNextCharactersPage: () -> Unit,
     onRetryLoadNextCharactersPage: () -> Unit,
 ) {
@@ -37,7 +44,14 @@ fun AppNavHost(
             CharacterListScreen(
                 uiState = characterListUiState,
                 isOffline = isCharacterListOffline,
+                query = characterSearchQuery,
+                selectedStatus = characterStatusFilter,
+                selectedSpecies = characterSpeciesFilter,
                 onRetry = onRetryCharacters,
+                onClearSearch = onClearCharacterSearch,
+                onQueryChanged = onCharacterSearchQueryChanged,
+                onStatusSelected = onCharacterStatusFilterChanged,
+                onSpeciesSelected = onCharacterSpeciesFilterChanged,
                 onCharacterClick = { characterId ->
                     navController.navigate(Routes.characterDetailRoute(characterId))
                 },

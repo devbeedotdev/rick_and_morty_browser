@@ -10,5 +10,6 @@ sealed class CharacterListUiState {
         val appendErrorMessage: String? = null,
     ) : CharacterListUiState()
     data object Empty : CharacterListUiState()
+    data class SearchEmpty(val query: String) : CharacterListUiState()
     data class Error(val message: String) : CharacterListUiState()
 }
