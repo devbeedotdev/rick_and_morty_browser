@@ -14,6 +14,7 @@ private object Routes {
 @Composable
 fun AppNavHost(
     characterListUiState: CharacterListUiState,
+    isCharacterListOffline: Boolean,
     onRetryCharacters: () -> Unit,
     onLoadNextCharactersPage: () -> Unit,
     onRetryLoadNextCharactersPage: () -> Unit,
@@ -26,6 +27,7 @@ fun AppNavHost(
         composable(Routes.CharacterList) {
             CharacterListScreen(
                 uiState = characterListUiState,
+                isOffline = isCharacterListOffline,
                 onRetry = onRetryCharacters,
                 onLoadNextPage = onLoadNextCharactersPage,
                 onRetryLoadNextPage = onRetryLoadNextCharactersPage,

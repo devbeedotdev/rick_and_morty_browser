@@ -21,9 +21,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val uiState by characterListViewModel.uiState.collectAsState()
+            val isOffline by characterListViewModel.isOffline.collectAsState()
             RickAndMortyBrowserTheme {
                 AppNavHost(
                     characterListUiState = uiState,
+                    isCharacterListOffline = isOffline,
                     onRetryCharacters = characterListViewModel::loadCharacters,
                     onLoadNextCharactersPage = characterListViewModel::loadNextPage,
                     onRetryLoadNextCharactersPage = characterListViewModel::retryLoadNextPage,
