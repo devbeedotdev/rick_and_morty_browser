@@ -76,7 +76,7 @@ fun CharacterListScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(bottom = innerPadding.calculateBottomPadding())
                 .fillMaxSize(),
         ) {
             SearchBar(
