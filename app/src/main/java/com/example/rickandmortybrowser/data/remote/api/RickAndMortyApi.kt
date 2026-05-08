@@ -1,7 +1,7 @@
 package com.example.rickandmortybrowser.data.remote.api
 
 import com.example.rickandmortybrowser.data.remote.model.CharacterPageResponse
-import com.example.rickandmortybrowser.data.remote.model.Episode
+import com.google.gson.JsonElement
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -18,5 +18,5 @@ interface RickAndMortyApi {
     ): CharacterPageResponse
 
     @GET("episode/{ids}")
-    suspend fun getEpisodesByIds(@Path("ids") ids: String): List<Episode>
+    suspend fun getEpisodesByIds(@Path("ids") ids: String): JsonElement
 }
